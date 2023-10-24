@@ -1,0 +1,358 @@
+﻿/*
+Реализовать свой класс-коллекцию типа Stack (такой коллекции в стандарте X++ не существует) 
+для работы с данными типа int. Дайте этому новому классу некое собственное название, 
+согласно нэймингу по best practices.
+Класс должен поддерживать содержать следующие публичные методы:
+void push(int _num) - добавляет новый элемент на вершину стэка;
+int pop() - удаляет элемент с вершины стэка и возвращает его значение;
+int min() - возвращает значение минимального элемента в стэке;
+int elements() - возвращает количество добавленных в стэк элементов;
+MyStack copy() - возвращает новый экземпляр класса стэка, который является копией текущего инстанса;
+container pack() - сериализует объект стэка в container;
+void unpack(container _packedStack) - десериализует данные из container;
+void clear() - удаляет все элементы из стэка;
+int[] toArray() - возвращает массив int, содержащий все элементы вашего стэка;
+str toStr() - должен вернуть строковое представление содержания стэка, 
+при этом строка должна быть такого вида: "elem1 -- elem2 -- elem3 -- ... -- elemN", 
+где elem1,2,...,N - последовательно добавленные элементы нашего стэка;
+boolean equals(StackInt _compStack) - проверяет, равны ли стэки по значению.
+Предусмотрите, чтоб класс вашего стэка можно было конструировать:
+без параметров;
+из объекта типа container;
+из объекта типа int[];
+из друго объекта класса Stack (своеобразный конструктор копирования).
+Предусмотрите все виды эрроров, которые могут возникнуть при работе с вашим классом стэка.
+Дополнительные требования:
+операции push, pop, min, toStr, equals должны быть реализованы так, чтоб они отрабатывали с константной сложностью O(1).
+Проверку работы вашего класса стэка как обычно делаете внутри метода main вашего job-класса.
+*/
+
+/* 
+Implement your own collection class of type Stack (such a collection does not exist in the X++ standard)
+for working with data of type int. Give this new class something of its own name,
+according to naming according to best practices.
+The class must support the following public methods:
+void push(int _num) - adds a new element to the top of the stack;
+int pop() - removes an element from the top of the stack and returns its value;
+int min() - returns the value of the minimum element in the stack;
+int elements() - returns the number of elements added to the stack;
+MyStack copy() - returns a new instance of the stack class, which is a copy of the current instance;
+container pack() - serializes a stack object into container;
+void unpack(container _packedStack) - deserializes data from container;
+void clear() - removes all elements from the stack;
+int[] toArray() - returns an int array containing all the elements of your stack;
+
+str toStr() - should return a string representation of the contents of the stack,
+in this case, the line should look like this: "elem1 -- elem2 -- elem3 -- ... -- elemN",
+where elem1,2,...,N are the sequentially added elements of our stack;
+
+boolean equals(StackInt _compStack) - checks if stacks are equal in value.
+
+Provide that your stack class can be constructed:
+no parameters;
+from an object of type container;
+from an object of type int[];
+from another object of the Stack class (a kind of copy constructor).
+Anticipate all types of errors that may occur when working with your stack class.
+Additional requirements:
+the operations push, pop, min, toStr, equals must be implemented so that they are processed with constant complexity O(1).
+You check the operation of your stack class as usual inside the main method of your job class.
+
+
+*/
+
+
+// Variant with List and ListIterator 2
+
+/// <summary>
+/// 
+/// </summary>
+class StackInt
+{
+    List stack;
+    List minStack;
+    str stackString;
+
+    public void new()
+    {
+        this.init();
+    }
+
+    public void init()
+    {
+        stack = new List(Types::Integer);
+        minStack = new List(Types::Integer);
+        stackString = "";
+    }
+
+    public void push(int _num)
+    {
+        ListIterator stackIter = new ListIterator(stack);
+        while (stackIter.more())
+        {
+            stackIter.next();
+        }
+        stackIter.insert(_num);
+    
+        ListIterator minStackIter = new ListIterator(minStack);
+        int minValue;
+        while (minStackIter.more())
+        {
+            minValue = minStackIter.value();
+            minStackIter.next();
+        }
+
+        if (minStack.elements() == 0 || _num <= minValue)
+        {
+            minStack.addEnd(_num);
+        }
+    
+        stackString += strFmt("%1 -- ", _num);
+    }
+
+    public int pop()
+    {
+        if (stack.elements() == 0)
+        {
+            throw error("Stack is empty");
+        }
+    
+        ListIterator stackIter = new ListIterator(stack);
+        int poppedValue;
+        while (stackIter.more())
+        {
+            poppedValue = stackIter.value();
+            stackIter.next();
+        }
+        stackIter.delete();
+
+        ListIterator minStackIter = new ListIterator(minStack);
+        int minValue;
+        while (minStackIter.more())
+        {
+            minValue = minStackIter.value();
+            minStackIter.next();
+        }
+
+        if (poppedValue == minValue)
+        {
+            minStackIter.delete();
+        }
+    
+        // Update the string when popping an element
+        str poppedValueStr = strFmt("%1 -- ", poppedValue);
+        int idx = strScan(stackString, poppedValueStr, strLen(stackString), strLen(poppedValueStr));
+  
+        stackString = subStr(stackString, 1, idx-1)
+            + subStr(stackString, idx + strLen(poppedValueStr),
+            strLen(stackString) - idx - strLen(poppedValueStr) + 1);
+
+        return poppedValue;
+    }
+
+    public int min()
+    {
+        if (minStack.elements() == 0)
+        {
+            throw error("Stack is empty");
+        }
+    
+        ListIterator iterator = new ListIterator(minStack);
+        int minValue;
+
+        while (iterator.more())
+        {
+            minValue = iterator.value();
+            iterator.next();
+        }
+
+      
+
+    
+        return minValue; 
+    }
+
+    public int elements()
+    {
+        return stack.elements();
+    }
+
+    public StackInt copy()
+    {
+        StackInt newStack = new StackInt();
+        
+        ListIterator iterator = new ListIterator(stack);
+        
+        while (iterator.more())
+        {
+            newStack.push(iterator.value());
+            iterator.next();
+        }
+        
+        return newStack;
+    }
+
+    public container pack()
+    {
+        container stackCon;
+
+        ListIterator iterator = new ListIterator(stack);
+
+        while (iterator.more())
+        {
+            stackCon += [iterator.value()];
+            iterator.next();
+        }
+
+        return stackCon;
+    }
+
+    public void unpack(container _packedStack)
+    {
+        container stackCon = _packedStack;
+
+        // Clear the current stack before unpacking
+        this.clear();
+
+        ListIterator iterator = new ListIterator(stack);
+
+        for (int i = 1; i <= conLen(stackCon); i++)
+        {
+            // Insert at the end of the list
+            iterator.insert(conPeek(stackCon, i));
+            iterator.next();
+        }
+    }
+
+    public void clear()
+    {
+        ListIterator stackIter = new ListIterator(stack);
+        while (stackIter.more())
+        {
+            stackIter.delete();
+        }
+
+        ListIterator minStackIter = new ListIterator(minStack);
+        while (minStackIter.more())
+        {
+            minStackIter.delete();
+        }
+
+        stackString = "";
+    }
+
+    public Array toArray()
+    {
+        Array array = new Array(Types::Integer);
+
+        ListIterator iterator = new ListIterator(stack);
+
+        int i = 1;
+       
+        while (iterator.more())
+        {
+            array.value(i, iterator.value());
+            iterator.next();
+            i++;
+        }
+       
+        return array;
+    }
+
+    public str toStr()
+    {
+        return stackString;
+    }
+
+    public boolean myEquals(StackInt _compStack)
+    {
+        StackInt compStack = _compStack;
+
+        if (compStack.stack.elements() != this.stack.elements())
+        return false;
+
+        ListIterator thisIter = new ListIterator(this.stack);
+        ListIterator compIter = new ListIterator(compStack.stack);
+
+        while (thisIter.more() && compIter.more())
+        {
+            if (thisIter.value() != compIter.value())
+            return false;
+
+            thisIter.next();
+            compIter.next();
+        }
+
+        return true;
+    }
+    
+}
+
+
+internal final class Main
+{
+    /// <summary>
+    /// Class entry point. The system will call this method when a designated menu
+    /// is selected or when execution starts and this class is set as the startup class.
+    /// </summary>
+    /// <param name = "_args">The specified arguments.</param>
+    public static void main(Args _args)
+    {
+        StackInt stack = new StackInt();
+    
+        // Push some values onto the stack
+        stack.push(10);
+        stack.push(20);
+        stack.push(30);
+
+        // Output information about the stack
+        info(strFmt("Number of elements in the stack: %1", stack.elements()));
+        info(strFmt("Minimum value in the stack: %1", stack.min()));
+    
+        // Pop a value from the stack
+        int poppedValue = stack.pop();
+        info(strFmt("Popped value: %1", poppedValue));
+    
+        // Output information about the stack after popping
+        info(strFmt("Number of elements in the stack after popping: %1", stack.elements()));
+        if (stack.elements() > 0)
+        {
+            info(strFmt("Minimum value in the stack after popping: %1", stack.min()));
+        }
+
+        // Copy the stack
+        StackInt copiedStack = stack.copy();
+        info(strFmt("Number of elements in the copied stack: %1", copiedStack.elements()));
+
+        // Pack and unpack the stack
+        container packedStack = copiedStack.pack();
+        StackInt unpackedStack = new StackInt();
+        unpackedStack.unpack(packedStack);
+        info(strFmt("Number of elements in the unpacked stack: %1", unpackedStack.elements()));
+
+        // Clear the stack
+        unpackedStack.clear();
+        info(strFmt("Number of elements in the cleared stack: %1", unpackedStack.elements()));
+        
+        // Convert to array
+        Array array = unpackedStack.toArray();
+        info(strFmt("Number of elements in the array: %1", dimOf(array)));
+
+        // Convert to string
+        str string = unpackedStack.toStr();
+        info(strFmt("String representation of the stack: %1", string));
+
+        // Compare stacks
+        boolean isEqual = unpackedStack.myEquals(copiedStack);
+        info(strFmt("Are the stacks equal? %1", isEqual ? "Yes" : "No"));
+
+
+    }
+
+}
+
+
+
+
+
+                             

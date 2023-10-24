@@ -1,0 +1,148 @@
+﻿/*
+        Реализовать свой класс-коллекцию типа Stack (такой коллекции в 
+        стандарте X++ не существует) для работы с данными типа int. 
+        Дайте этому новому классу некое собственное название, 
+        согласно нэймингу по best practices.
+        Класс должен поддерживать содержать следующие публичные методы:
+        ·void push(int _num) - добавляет новый элемент на вершину стэка;
+        ·int pop() - удаляет элемент с вершины стэка и возвращает его значение;
+        ·int min() - возвращает значение минимального элемента в стэке;
+        ·int elements() - возвращает количество добавленных в стэк элементов;
+        ·MyStack copy() - возвращает новый экземпляр класса стэка, 
+            который является копией текущего инстанса;
+        ·container pack() - сериализует объект стэка в container;
+        ·void unpack(container _packedStack) - десериализует данные из container;
+        ·void clear() - удаляет все элементы из стэка;
+        ·int[] toArray() - возвращает массив int, содержащий все элементы вашего стэка.
+        Предусмотрите, чтоб класс вашего стэка можно было конструировать:
+        ·без параметров;
+        ·из объекта типа container;
+        ·из объекта типа int[];
+        ·из друго объекта класса Stack (своеобразный конструктор копирования).
+        Предусмотрите все виды эрроров, которые могут возникнуть 
+        при работе с вашим классом стэка.
+        Дополнительные требования:
+        ·операции push, pop, min должны быть реализованы так, 
+            чтоб они отрабатывали с константной сложностью O(1).
+        Проверку работы вашего класса стэка как обычно делаете 
+            внутри метода main вашего job-класса.
+
+*/
+
+        class MyVitStack
+        {
+            Array stack;
+            Array minStack;
+            int counter;
+
+            public void new()
+            {
+                stack = new Array(Types::Integer);
+                minStack = new Array(Types::Integer);
+                counter = 1;
+            }
+
+            public void newFromContainer(container _packedStack)
+            {
+                this.unpack(_packedStack);
+            }
+
+            public void newFromArray(int _array[])
+            {
+                this.clear();
+                for(int i = 1; i <= dimOf(_array); i++)
+                {
+                    this.push(_array[i]);
+                }
+            }
+
+            public void newFromStack(MyVitStack _stack)
+            {
+                this.clear();
+                this.stack = _stack.copy().stack;
+                this.minStack = _stack.copy().minStack;
+                this.count = _stack.elements();
+            }
+
+            public void push(int _num)
+            {
+                counter++;
+                stack.value(counter, _num);
+                if(minStack.elements() == 0 || _num <= minStack.value(minStack.elements()))
+            minStack.value(minStack.elements()+1, _num);
+            }
+
+            public int pop()
+            {
+                int num;
+                if(stack.elements() > 0)
+                {
+                    num = stack.value(counter);
+                    counter--;
+                    if(num == minStack.value(minStack.elements()))
+                minStack.value(minStack.elements(), 0);
+                    return num;
+                }
+                else
+            throw error("Stack is empty");
+            }
+
+            public int min()
+            {
+                if(minStack.elements() > 0)
+            return minStack.value(minStack.elements());
+                else
+            throw error("Stack is empty");
+            }
+
+            public int elements()
+            {
+                return counter;
+            }
+
+            public MyVitStack copy()
+            {
+                MyVitStack newStack = new MyVitStack();
+                newStack.stack = this.stack;
+                newStack.minStack = this.minStack;
+                newStack.counter = this.counter;
+        
+                return newStack;
+            }
+
+            public container pack()
+            {
+                return [stack, minStack, counter];
+            }
+
+            public void unpack(container _packedStack)
+            {
+                [this.stack, this.minStack, this.counter] = _packedStack;
+            }
+
+            public void clear()
+            {
+                stack = new Array(Types::Integer);
+                minStack = new Array(Types::Integer);
+                counter = 0;
+            }
+
+            public int[] toArray()
+            {
+                int array[counter];
+       
+                for(int i = 1; i <= counter; i++)
+           array[i] = stack.value(i);
+
+                return array;
+            }
+        }
+
+    public static void main(Args _args)
+    {
+        info("test hello");
+
+
+    }
+
+}

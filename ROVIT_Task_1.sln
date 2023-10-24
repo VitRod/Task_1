@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.33927.289
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FC65038C-1B2F-41E1-A629-BED71D161FFF}") = "ROVIT_Task_1 (ISV) [Fleet Management]", "ROVIT_Task_1\ROVIT_Task_1.rnrproj", "{5EA47308-25E9-4331-9CD5-E3D470119ED9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5EA47308-25E9-4331-9CD5-E3D470119ED9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5EA47308-25E9-4331-9CD5-E3D470119ED9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D3FA8C66-0858-4D76-B928-8B948DB3CA40}
+	EndGlobalSection
+EndGlobal
